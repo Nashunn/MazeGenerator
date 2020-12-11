@@ -1,5 +1,6 @@
 #! python3.
 import pygame
+import random as rand
 from MazeGenerator.models.case import Case
 from MazeGenerator.models.point import Point
 
@@ -24,9 +25,10 @@ class Maze:
         self.fps = 60  # This variable will define how many frames we update per second.
         self.grid = []  # Grid of cases for the maze
         self.fill_grid()
-        self.start: Case  # Start of the maze
-        self.end: Case  # End of the maze
+        self.start: Case = self.grid[0]  # Start of the maze
+        self.end: Case = self.grid[len(self.grid) - 1]  # End of the maze
         self.generate_start_end()
+        self.generate_base_walls()
 
     def run(self):
         # Display loop
@@ -55,7 +57,31 @@ class Maze:
 
     def generate_start_end(self):
         """ Identify a start and an end case for the maze """
-        # Todo
+        startId = rand.randint(0, len(self.grid) - 1)  # Find an id randomly in the maze grid
+        spaceUnit = int((len(self.grid)) / 4)  # Space unit to space the end from the start (unit = 1/4 of maze)
+        endId = rand.randint((startId + 2*spaceUnit), (startId + 3*spaceUnit)) % (len(self.grid) - 1)  # Place end between : (start + 2/4) or (start + 3/4) modulo maxCase
+        # Set Start and End
+        self.start: Case = self.grid[startId]
+        self.end: Case = self.grid[endId]
+        # Identify them with color on the maze
+        self.start.set_bg(self.screen, (100, 180, 100))
+        self.end.set_bg(self.screen, (180, 100, 100))
+
+    def generate_base_walls(self):
+        """ Generate base walls all around the maze """
+        lastLine = self.height  # Info first line is 0
+        lastCol = self.width  # Info first col is 0
+        # Set walls on top of first line and on bottom of last line
+        for col in range(lastCol):
+            caseFirstLine: Case = self.find_case_by_coord(col, 0)
+            caseLastLine: Case = self.find_case_by_coord(col, lastLine - 1)
+            caseFirstLine.add_wall_top()
+            caseLastLine.add_wall_bottom()
+        for line in range(lastLine):
+            caseFirstCol: Case = self.find_case_by_coord(0, line)
+            caseLastCol: Case = self.find_case_by_coord(lastCol - 1, line)
+            caseFirstCol.add_wall_left()
+            caseLastCol.add_wall_right()
 
     def print_grid(self):
         """ Print the grid with case number in console """
@@ -74,7 +100,6 @@ class Maze:
         lastCase: Case = self.find_case_by_coord(self.width - 1, self.height - 1)
         for idCase in range(lastCase.id + 1):
             case = self.grid[idCase]  # Get case
-            # case.draw_id(self.screen) # Print case id, careful if maze case is not big enough don't use it
             case.draw_walls(self.screen)
 
     def find_case_by_coord(self, col, line):

@@ -64,7 +64,7 @@ class Case:
         """ Draw a wall at the bottom of the case """
         p_start = self.get_coord_bl()
         p_end = self.get_coord_br()
-        pygame.draw.line(screen, COLOR_LINE, (p_start.x, p_start.y), (p_end.x, p_end.y))
+        pygame.draw.line(screen, COLOR_LINE, (p_start.x, p_start.y - 1), (p_end.x, p_end.y - 1))
 
     def draw_wall_left(self, screen):
         """ Draw a wall at the left of the case """
@@ -76,7 +76,11 @@ class Case:
         """ Draw a wall at the right of the case """
         p_start = self.get_coord_tr()
         p_end = self.get_coord_br()
-        pygame.draw.line(screen, COLOR_LINE, (p_start.x, p_start.y), (p_end.x, p_end.y))
+        pygame.draw.line(screen, COLOR_LINE, (p_start.x - 1, p_start.y), (p_end.x - 1, p_end.y))
+
+    def set_bg(self, screen, colorRGB):
+        """ Draw a background to the case """
+        pygame.Surface.fill(screen, colorRGB, pygame.Rect(self.coord.x, self.coord.y, self.sizeCase, self.sizeCase))
 
     def print(self):
         """ Print case info in console """

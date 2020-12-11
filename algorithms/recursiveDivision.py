@@ -10,7 +10,7 @@ VERTICAL = 'VERTICAL'
 
 def generate_maze(maze: Maze):
     """ Generate a maze following the recursive division algorithm"""
-    maze.print_grid()
+    # maze.print_grid()
     # Generate walls in maze
     generate_walls(maze)
     # Update display
